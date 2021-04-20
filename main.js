@@ -12,11 +12,8 @@ let result = ""
 app.post("/computeHolidayPlan", function (req, res) {
     let startDate = req.body.startDate
     let endDate = req.body.endDate
-    console.log(startDate)
-    console.log(endDate)
     const holidayPlanner = new HolidayPlanner(startDate, endDate)
     const holidayPlan = holidayPlanner.computeHolidayPlan()
-    console.log(holidayPlanner.filterNonConsumingDays())
     result = holidayPlan
     res.redirect("/")
 })
@@ -24,7 +21,6 @@ app.post("/computeHolidayPlan", function (req, res) {
 
 // render index page
 app.get('/', function (req, res) {
-    console.log(result)
     res.render('index', {result})
 })
 
