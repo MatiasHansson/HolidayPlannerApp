@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Holiday planner app</title>
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+    <div>
+        <form action="/computeHolidayPlan" method="POST">
+            <input type="date" name="startDate">
+            <input type="date" name="endDate">
+            <button> submit </button>
+        </form>
+        <div>
+            <%= result %>
+        </div>
+    </div>
+</body>
+
+</html>

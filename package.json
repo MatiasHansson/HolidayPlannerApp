@@ -1,0 +1,27 @@
+{
+  "name": "holidayplannerapp",
+  "type": "module",
+  "description": "",
+  "version": "1.0.0",
+  "main": "main.js",
+  "dependencies": {
+    "ejs": "^3.1.5",
+    "express": "^4.17.1"
+  },
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MatiasHansson/HolidayPlannerApp.git"
+  },
+  "author": "matias.hansson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MatiasHansson/HolidayPlannerApp/issues"
+  },
+  "homepage": "https://github.com/MatiasHansson/HolidayPlannerApp#readme",
+  "devDependencies": {
+    "ava": "^3.15.0"
+  }
+}
