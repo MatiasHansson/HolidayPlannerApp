@@ -6,6 +6,7 @@ Install manual:
 1. Clone repo, use npm to install used packages (root directory use "npm install". Requires node to be installed https://nodejs.org/en/download/)
 2. When all node packages are installed, run node server on localhost (root directory hit "node main.js")
 3. Open browser on localhost:8080
+4. Run test by "npm test" in the root directory
 
 Implementation:
 
