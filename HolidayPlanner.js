@@ -1,93 +1,74 @@
 export default class HolidayPlanner {
     startDate
     endDate
+    nonConsumingHolidays
+    countDatesInRange
+    nonConsumingDayMatcher
+    nonConsumingHolidayList =
+        [
+            "2020-1-1", "2020-1-6", "2020-4-10", "2020-4-13", "2020-5-1", "2020-5-21", "2020-6-19",
+            "2020-12-24", "2020-12-25", "2021-1-1", "2021-1-6", "2021-4-2", "2021-4-5", "2021-5-13",
+            "2021-6-20", "2021-12-6", "2021-12-24"
+        ]
 
     constructor(startDate, endDate) {
         this.startDate = new Date(startDate)
         this.endDate = new Date(endDate)
-    }
+        this.nonConsumingHolidays = this.nonConsumingHolidayList.map(day => new Date(day))
+        this.countDatesInRange = (startDate, endDate) => {
+            const dates = []
+            let iterator = startDate
 
-    // validate is given date range in current holiday period
-    isInCurrentHolidayPeriod() {
-        const year = new Date().getFullYear()
-        const startYear = new Date() > new Date(`${year}-03-31`) ? year : year - 1
-        const currentPeriodStart = new Date(`${startYear}-04-01`)
-        const currentPeriodEnd = new Date(`${startYear + 1}-03-31`)
-        return (currentPeriodStart <= this.startDate && currentPeriodStart <= this.endDate) && (currentPeriodEnd >= this.startDate && currentPeriodEnd >= this.endDate)
-    }
+            while (iterator <= endDate) {
+                dates.push(iterator)
 
-    // validate if the given dates are in chronological order
-    isInChronologicalOrder() {
-        return this.startDate < this.endDate
-    }
-
-    // validate that given period is in limited days range (50 days)
-    isInLimitedRange() {
-        const oneDay = 24 * 60 * 60 * 1000 // hours*minutes*seconds*milliseconds
-        return Math.round(Math.abs((this.startDate - this.endDate) / oneDay)) <= 50
-    }
-
-    // filter a new list with non consuming days
-    filterNonConsumingDays() {
-        const holidaysList =
-            [
-                "2020-1-1", "2020-1-6", "2020-4-10", "2020-4-13", "2020-5-1", "2020-5-21", "2020-6-19",
-                "2020-12-24", "2020-12-25", "2021-1-1", "2021-1-6", "2021-4-2", "2021-4-5", "2021-5-13",
-                "2021-6-20", "2021-12-6", "2021-12-24"
-            ]
-        const selectedDays = this.getDatesBetween(this.startDate, this.endDate)
-        const nonConsumingDays = holidaysList.map(day => new Date(day))
-        const filteredHolidays = (d1, d2) => {
-            return (d1.getFullYear() === d2.getFullYear() &&
-                d1.getMonth() === d2.getMonth() &&
-                d1.getDate() === d2.getDate()) ||
-                d1.getDay() === 0 //Sunday
+                iterator = new Date(
+                    iterator.getFullYear(),
+                    iterator.getMonth(),
+                    iterator.getDate() + 1,
+                )
+            }
+            return dates
         }
-
-        const filtered = selectedDays.filter(s =>
-            !nonConsumingDays.some(t => {
-                return filteredHolidays(s, t)
-            }))
-            return filtered
+        this.nonConsumingDayMatcher = (selectedDay, nonConsumingHoliday) => {
+            const isSameDate =
+                selectedDay.getFullYear() === nonConsumingHoliday.getFullYear() &&
+                selectedDay.getMonth() === nonConsumingHoliday.getMonth() &&
+                selectedDay.getDate() === nonConsumingHoliday.getDate()
+            const isSunday = selectedDay.getDay() === 0
+            return isSameDate || isSunday
+        }
     }
 
-    // Returns an array of dates between the two dates
-    getDatesBetween(startDate, endDate) {
-        const dates = []
+    get startDate() {
+        return this.startDate
+    }
 
-        let currentDate = new Date(
-            startDate.getFullYear(),
-            startDate.getMonth(),
-            startDate.getDate()
+    set startDate(date) {
+        this.startDate = date
+    }
+
+    get endDate() {
+        return this.startDate
+    }
+
+    set endDate(date) {
+        this.startDate = date
+    }
+
+    // get a list of Date object with non consuming holiday days
+    get holidayDays() {
+        const datesInRange = this.countDatesInRange(this.startDate, this.endDate)
+        const holidayDays = datesInRange.filter(selectedDay => {
+            const isNonConsumingHoliday = this.nonConsumingHolidays.some(nonConsumingHoliday => {
+                return this.nonConsumingDayMatcher(selectedDay, nonConsumingHoliday)
+            })
+            if (isNonConsumingHoliday) {
+                return false
+            }
+            else return true
+        }
         )
-
-        while (currentDate <= endDate) {
-            dates.push(currentDate)
-
-            currentDate = new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth(),
-                currentDate.getDate() + 1,
-            )
-        }
-
-        return dates
+        return holidayDays
     }
-
-    computeHolidayPlan() {
-        if(!this.isInCurrentHolidayPeriod()) {
-            return "Selected days are not in current holiday period"
-        }
-
-        if(!this.isInChronologicalOrder()) {
-            return "Selected days must be in chronological order"
-        }
-
-        if(!this.isInLimitedRange()) {
-            return "Max days limit reached. Cannot choose over 50 days"
-        }
-
-        else return `Days to use holidays: ${this.filterNonConsumingDays().length}`
-    }
-
 }
